@@ -1,3 +1,4 @@
+import sys
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -22,16 +23,13 @@ def render_radar_chart(scores):
 import streamlit as st
 import spacy
 from collections import Counter
-import subprocess
 
 # Load spaCy English model
-
 try:
-    nlp = spacy.load("en_core_web_sm")
+    nlp = spacy.load('en_core_web_sm')
 except OSError:
-    with st.spinner("Downloading spaCy model..."):
-        subprocess.run(["python", "-m", "spacy", "download", "en_core_web_sm"], check=True)
-        nlp = spacy.load("en_core_web_sm")
+    st.error("Please run: python -m spacy download en_core_web_sm")
+    st.stop()
 
 # Rule-based personality scoring
 def analyze_traits(doc):
@@ -69,5 +67,6 @@ if st.button("🔍 Analyze"):
             st.write(f"**{trait.title()}**: {'High' if score > 0 else 'Low'} ({score} match{'es' if score != 1 else ''})")
 else:
     st.info("Paste a text sample and click 'Analyze' to begin.")
+
 
 
