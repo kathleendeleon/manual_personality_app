@@ -12,7 +12,7 @@ def classify_mbti(text):
         "J": 0, "P": 0
     }
 
-        keywords = {
+    keywords = {
         "I": [
             "introspective", "reserved", "reflective", "independent", "internal",
             "focused", "thoughtful", "private", "self-aware", "inward-looking",
