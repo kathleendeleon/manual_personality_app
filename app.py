@@ -1,45 +1,46 @@
 import streamlit as st
+import spacy
+from collections import Counter
 
-# Rule-based tone and personality classifier
-def analyze_text(text):
-    traits = {
-        "openness": 0,
-        "conscientiousness": 0,
-        "extraversion": 0,
-        "agreeableness": 0,
-        "neuroticism": 0,
+# Load spaCy English model
+try:
+    nlp = spacy.load('en_core_web_sm')
+except OSError:
+    st.error("Please run: python -m spacy download en_core_web_sm")
+    st.stop()
+
+# Rule-based personality scoring
+def analyze_traits(doc):
+    trait_keywords = {
+        "openness": ["imagine", "creative", "explore", "theory", "fantasy", "curious"],
+        "conscientiousness": ["organized", "schedule", "goal", "punctual", "focused"],
+        "extraversion": ["social", "party", "talk", "friends", "energy", "outgoing"],
+        "agreeableness": ["kind", "help", "empathy", "forgive", "caring", "cooperate"],
+        "neuroticism": ["worried", "anxious", "stressed", "upset", "moody", "sensitive"]
     }
 
-    # Naive keyword rules
-    if any(word in text.lower() for word in ["imagine", "creative", "fantasy", "explore"]):
-        traits["openness"] += 1
-    if any(word in text.lower() for word in ["organized", "plan", "schedule", "detail"]):
-        traits["conscientiousness"] += 1
-    if any(word in text.lower() for word in ["party", "talk", "friends", "social"]):
-        traits["extraversion"] += 1
-    if any(word in text.lower() for word in ["help", "kind", "care", "empathy"]):
-        traits["agreeableness"] += 1
-    if any(word in text.lower() for word in ["anxious", "worried", "tense", "stressed"]):
-        traits["neuroticism"] += 1
+    counts = Counter({trait: 0 for trait in trait_keywords})
+    for token in doc:
+        for trait, keywords in trait_keywords.items():
+            if token.lemma_.lower() in keywords:
+                counts[trait] += 1
+    return counts
 
-    return traits
+# UI
+st.set_page_config(page_title="NLP Personality Analyzer", page_icon="🧠")
+st.title("🧠 NLP-Based Personality Analyzer")
+st.markdown("Enter a writing sample below. This app uses spaCy's NLP model and a keyword scoring system to estimate your personality profile.")
 
-# Streamlit UI
-st.set_page_config(page_title="Offline Personality Analyzer", page_icon="🧠")
-st.title("🧠 Offline Personality Analyzer")
-st.markdown("""
-Enter a short writing sample below (e.g., journal entry, email, or personal reflection), and we'll give you a basic personality breakdown based on keyword cues.
-""")
-
-user_input = st.text_area("✍️ Paste your writing sample here:", height=250)
+user_text = st.text_area("✍️ Paste your writing sample here:", height=250)
 
 if st.button("🔍 Analyze"):
-    if not user_input.strip():
+    if not user_text.strip():
         st.warning("Please enter some text to analyze.")
     else:
-        traits = analyze_text(user_input)
+        doc = nlp(user_text)
+        results = analyze_traits(doc)
         st.subheader("📋 Personality Analysis")
-        for trait, score in traits.items():
-            st.write(f"**{trait.title()}**: {'High' if score > 0 else 'Low'}")
+        for trait, score in results.items():
+            st.write(f"**{trait.title()}**: {'High' if score > 0 else 'Low'} ({score} match{'es' if score != 1 else ''})")
 else:
     st.info("Paste a text sample and click 'Analyze' to begin.")
