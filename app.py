@@ -12,16 +12,57 @@ def classify_mbti(text):
         "J": 0, "P": 0
     }
 
-    keywords = {
-        "I": ["introspective", "reserved", "reflective", "independent", "internal"],
-        "E": ["outgoing", "energetic", "team", "sociable", "talkative"],
-        "S": ["practical", "realistic", "detail", "concrete", "facts"],
-        "N": ["visionary", "imaginative", "theoretical", "conceptual", "future"],
-        "T": ["logical", "analytical", "strategy", "data", "objective"],
-        "F": ["empathetic", "caring", "values", "feelings", "emotion"],
-        "J": ["organized", "structured", "plan", "schedule", "decisive"],
-        "P": ["flexible", "spontaneous", "adaptive", "explore", "open-ended"]
+        keywords = {
+        "I": [
+            "introspective", "reserved", "reflective", "independent", "internal",
+            "focused", "thoughtful", "private", "self-aware", "inward-looking",
+            "autonomous", "quiet", "observer", "self-contained", "works independently",
+            "concentrated", "needs space", "low profile", "solo", "minimalist"
+        ],
+        "E": [
+            "outgoing", "energetic", "team player", "sociable", "talkative",
+            "networker", "presenter", "collaborative", "leadership", "extroverted",
+            "enthusiastic", "dynamic", "connector", "client-facing", "group-oriented",
+            "influencer", "likes people", "public speaker", "driven by connection", "enthusiasm"
+        ],
+        "S": [
+            "practical", "realistic", "detail-oriented", "concrete", "facts",
+            "hands-on", "executor", "accurate", "methodical", "step-by-step",
+            "process-driven", "routine", "planner", "results-oriented", "implementation",
+            "traditional", "measurable", "observable", "reporting", "logistics"
+        ],
+        "N": [
+            "visionary", "imaginative", "theoretical", "conceptual", "future-focused",
+            "abstract thinker", "strategic", "pattern recognition", "innovative", "idea generator",
+            "ideation", "growth mindset", "change-driven", "possibility", "intuitive",
+            "dreamer", "nonlinear", "long-term vision", "blue sky thinker", "outside the box"
+        ],
+        "T": [
+            "logical", "analytical", "strategy", "data-driven", "objective",
+            "critical thinker", "problem-solving", "metrics", "rational", "evidence-based",
+            "direct", "frameworks", "detached", "diagnostic", "evaluation",
+            "process optimization", "reasoning", "efficiency", "competitive", "outcome-focused"
+        ],
+        "F": [
+            "empathetic", "caring", "values-driven", "feelings", "emotionally aware",
+            "nurturing", "supportive", "people-centered", "intuitive", "compassionate",
+            "ethical", "relationship-focused", "harmonious", "sensitive", "inclusive",
+            "culture-building", "trusted", "helps others", "loyal", "heart-led"
+        ],
+        "J": [
+            "organized", "structured", "plans", "schedules", "decisive",
+            "time management", "goal-setting", "predictable", "prioritized", "methodical",
+            "disciplined", "closure-seeking", "follow-through", "roadmap", "task management",
+            "systematic", "execution-focused", "checklists", "calendar-driven", "decision-making"
+        ],
+        "P": [
+            "flexible", "spontaneous", "adaptive", "exploratory", "open-ended",
+            "curious", "multitasking", "agile", "thrives in ambiguity", "experimental",
+            "fluid", "unstructured", "discovery-driven", "nonlinear", "reactive",
+            "improvisational", "freestyle", "serendipitous", "emergent", "comfortable with change"
+        ]
     }
+
 
     text = text.lower()
     for letter, words in keywords.items():
@@ -65,6 +106,5 @@ if st.button("Analyze"):
             st.error(f"Failed to fetch or analyze the profile. Error: {e}")
 else:
     st.info("Enter a valid LinkedIn profile URL to begin.")
-
 
 
