@@ -1,72 +1,71 @@
-import sys
-import matplotlib.pyplot as plt
-import numpy as np
-
-def render_radar_chart(scores):
-    labels = list(scores.keys())
-    values = list(scores.values())
-    num_vars = len(labels)
-
-    # Repeat the first value to close the loop
-    values += values[:1]
-    angles = np.linspace(0, 2 * np.pi, num_vars, endpoint=False).tolist()
-    angles += angles[:1]
-
-    fig, ax = plt.subplots(figsize=(6, 6), subplot_kw=dict(polar=True))
-    ax.plot(angles, values, color='skyblue', linewidth=2)
-    ax.fill(angles, values, color='skyblue', alpha=0.4)
-    ax.set_yticklabels([])
-    ax.set_xticks(angles[:-1])
-    ax.set_xticklabels(labels)
-    st.pyplot(fig)
-    
 import streamlit as st
-import spacy
-from collections import Counter
+import requests
+from bs4 import BeautifulSoup
+import re
 
-# Load spaCy English model
-try:
-    nlp = spacy.load('en_core_web_sm')
-except OSError:
-    st.error("Please run: python -m spacy download en_core_web_sm")
-    st.stop()
-
-# Rule-based personality scoring
-def analyze_traits(doc):
-    trait_keywords = {
-        "openness": ["imagine", "creative", "explore", "theory", "fantasy", "curious"],
-        "conscientiousness": ["organized", "schedule", "goal", "punctual", "focused"],
-        "extraversion": ["social", "party", "talk", "friends", "energy", "outgoing"],
-        "agreeableness": ["kind", "help", "empathy", "forgive", "caring", "cooperate"],
-        "neuroticism": ["worried", "anxious", "stressed", "upset", "moody", "sensitive"]
+# Placeholder MBTI classifier based on word matching
+def classify_mbti(text):
+    traits = {
+        "I": 0, "E": 0,
+        "S": 0, "N": 0,
+        "T": 0, "F": 0,
+        "J": 0, "P": 0
     }
 
-    counts = Counter({trait: 0 for trait in trait_keywords})
-    for token in doc:
-        for trait, keywords in trait_keywords.items():
-            if token.lemma_.lower() in keywords:
-                counts[trait] += 1
-    return counts
+    keywords = {
+        "I": ["introspective", "reserved", "reflective", "independent", "internal"],
+        "E": ["outgoing", "energetic", "team", "sociable", "talkative"],
+        "S": ["practical", "realistic", "detail", "concrete", "facts"],
+        "N": ["visionary", "imaginative", "theoretical", "conceptual", "future"],
+        "T": ["logical", "analytical", "strategy", "data", "objective"],
+        "F": ["empathetic", "caring", "values", "feelings", "emotion"],
+        "J": ["organized", "structured", "plan", "schedule", "decisive"],
+        "P": ["flexible", "spontaneous", "adaptive", "explore", "open-ended"]
+    }
 
-# UI
-st.set_page_config(page_title="NLP Personality Analyzer", page_icon="🧠")
-st.title("🧠 NLP-Based Personality Analyzer")
-st.markdown("Enter a writing sample below. This app uses spaCy's NLP model and a keyword scoring system to estimate your personality profile.")
+    text = text.lower()
+    for letter, words in keywords.items():
+        for word in words:
+            if word in text:
+                traits[letter] += 1
 
-user_text = st.text_area("✍️ Paste your writing sample here:", height=250)
+    mbti = ""
+    mbti += "I" if traits["I"] >= traits["E"] else "E"
+    mbti += "S" if traits["S"] >= traits["N"] else "N"
+    mbti += "T" if traits["T"] >= traits["F"] else "F"
+    mbti += "J" if traits["J"] >= traits["P"] else "P"
+    return mbti
 
-if st.button("🔍 Analyze"):
-    if not user_text.strip():
-        st.warning("Please enter some text to analyze.")
+# Streamlit UI
+st.set_page_config(page_title="MBTI Analyzer from LinkedIn", page_icon="🧠")
+st.title("🔗 MBTI Personality Analyzer from LinkedIn")
+
+st.markdown("""
+Paste a public LinkedIn profile URL below, and we'll try to infer the person's MBTI type based on visible text
+(like their summary, headline, or experience).
+""")
+
+linkedin_url = st.text_input("🔗 LinkedIn Profile URL")
+
+if st.button("Analyze"):
+    if not linkedin_url.startswith("https://www.linkedin.com/in/"):
+        st.error("Please enter a valid public LinkedIn profile URL (must start with https://www.linkedin.com/in/).")
     else:
-        doc = nlp(user_text)
-        results = analyze_traits(doc)
-        st.subheader("📋 Personality Analysis")
-        render_radar_chart(results)
-        for trait, score in results.items():
-            st.write(f"**{trait.title()}**: {'High' if score > 0 else 'Low'} ({score} match{'es' if score != 1 else ''})")
+        try:
+            headers = {
+                "User-Agent": "Mozilla/5.0"
+            }
+            response = requests.get(linkedin_url, headers=headers, timeout=10)
+            soup = BeautifulSoup(response.text, "html.parser")
+            text = soup.get_text(separator=" ")
+            clean_text = re.sub(r'\s+', ' ', text)
+            st.subheader("🧠 Inferred MBTI Type:")
+            st.success(classify_mbti(clean_text))
+        except Exception as e:
+            st.error(f"Failed to fetch or analyze the profile. Error: {e}")
 else:
-    st.info("Paste a text sample and click 'Analyze' to begin.")
+    st.info("Enter a valid LinkedIn profile URL to begin.")
+
 
 
 
