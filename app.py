@@ -1,5 +1,3 @@
-
-
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -20,6 +18,7 @@ def render_radar_chart(scores):
     ax.set_xticks(angles[:-1])
     ax.set_xticklabels(labels)
     st.pyplot(fig)
+    
 import streamlit as st
 import spacy
 from collections import Counter
