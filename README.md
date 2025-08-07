@@ -2,9 +2,11 @@
 personality Analyzer without OpenAI
 
 How It Works:
-(1) Uses simple rule-based keyword detection for Big Five traits
-(2) Instant, local personality feedback
-(3) Designed to be Streamlit Cloud-compatible with no dependency issues
+(1) Takes a public LinkedIn profile URL
+
+(2) Uses BeautifulSoup to extract text from the page (summary, headline, etc.)
+
+(3) Uses a rule-based keyword classifier to infer MBTI type (e.g., ENFP, ISTJ)
 
 Try it!
 https://manualpersonalityapp.streamlit.app/
