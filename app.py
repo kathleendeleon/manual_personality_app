@@ -124,7 +124,6 @@ if st.button("Analyze"):
             st.subheader("🧠 Inferred MBTI Type:")
             
             mbti_type = classify_mbti(clean_text)
-            st.subheader("🧠 Inferred MBTI Type:")
             st.success(mbti_type)
             st.subheader("🔍 Personality Summary:")
             st.markdown(mbti_summaries.get(mbti_type, "No summary available."))
