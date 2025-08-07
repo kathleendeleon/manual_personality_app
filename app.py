@@ -100,7 +100,7 @@ mbti_summaries = {
 
 # Streamlit UI
 st.set_page_config(page_title="Kath's MBTI Analyzer from LinkedIn", page_icon="🧠")
-st.title("🔗 MBTI Personality Analyzer from LinkedIn")
+st.title("🔗 Kath's MBTI Personality Analyzer from LinkedIn")
 
 st.markdown("""
 Paste a public LinkedIn profile URL below, and we'll try to infer the person's MBTI type based on visible text
