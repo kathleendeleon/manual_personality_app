@@ -99,7 +99,7 @@ mbti_summaries = {
 }
 
 # Streamlit UI
-st.set_page_config(page_title="MBTI Analyzer from LinkedIn", page_icon="🧠")
+st.set_page_config(page_title="Kath's MBTI Analyzer from LinkedIn", page_icon="🧠")
 st.title("🔗 MBTI Personality Analyzer from LinkedIn")
 
 st.markdown("""
