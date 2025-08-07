@@ -22,13 +22,16 @@ def render_radar_chart(scores):
 import streamlit as st
 import spacy
 from collections import Counter
+import subprocess
 
 # Load spaCy English model
+
 try:
-    nlp = spacy.load('en_core_web_sm')
+    nlp = spacy.load("en_core_web_sm")
 except OSError:
-    st.error("Please run: python -m spacy download en_core_web_sm")
-    st.stop()
+    with st.spinner("Downloading spaCy model..."):
+        subprocess.run(["python", "-m", "spacy", "download", "en_core_web_sm"], check=True)
+        nlp = spacy.load("en_core_web_sm")
 
 # Rule-based personality scoring
 def analyze_traits(doc):
