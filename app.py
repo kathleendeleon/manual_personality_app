@@ -1,4 +1,5 @@
 
+
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -66,4 +67,5 @@ if st.button("🔍 Analyze"):
             st.write(f"**{trait.title()}**: {'High' if score > 0 else 'Low'} ({score} match{'es' if score != 1 else ''})")
 else:
     st.info("Paste a text sample and click 'Analyze' to begin.")
+
 
