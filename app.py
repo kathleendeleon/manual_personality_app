@@ -1,3 +1,24 @@
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+def render_radar_chart(scores):
+    labels = list(scores.keys())
+    values = list(scores.values())
+    num_vars = len(labels)
+
+    # Repeat the first value to close the loop
+    values += values[:1]
+    angles = np.linspace(0, 2 * np.pi, num_vars, endpoint=False).tolist()
+    angles += angles[:1]
+
+    fig, ax = plt.subplots(figsize=(6, 6), subplot_kw=dict(polar=True))
+    ax.plot(angles, values, color='skyblue', linewidth=2)
+    ax.fill(angles, values, color='skyblue', alpha=0.4)
+    ax.set_yticklabels([])
+    ax.set_xticks(angles[:-1])
+    ax.set_xticklabels(labels)
+    st.pyplot(fig)
 import streamlit as st
 import spacy
 from collections import Counter
@@ -40,7 +61,9 @@ if st.button("🔍 Analyze"):
         doc = nlp(user_text)
         results = analyze_traits(doc)
         st.subheader("📋 Personality Analysis")
+        render_radar_chart(results)
         for trait, score in results.items():
             st.write(f"**{trait.title()}**: {'High' if score > 0 else 'Low'} ({score} match{'es' if score != 1 else ''})")
 else:
     st.info("Paste a text sample and click 'Analyze' to begin.")
+
